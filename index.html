@@ -26,6 +26,7 @@
   <style>
     html, body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; margin:0; padding:0; background:#0A0F23; }
     a { color:#E8C56A; } a:hover { color:#F6D98C; }
+    @keyframes ttDrawer { from { transform:translateX(-100%); } to { transform:translateX(0); } }
     @media (min-width:2200px) { html { zoom:1.35; } }
     @media (min-width:1700px) and (max-width:2199px) { html { zoom:1.12; } }
     @media (max-width:420px) { html { -webkit-text-size-adjust:100%; } }
@@ -55,6 +56,21 @@
 
   <!-- ===== Header ===== -->
   <header data-screen-label="Header" style="position:sticky; top:0; z-index:20; backdrop-filter:blur(14px); background:{{T.headerBg}}; border-bottom:1px solid {{T.headerBorder}}; transition:background 0.3s, border-color 0.3s;">
+    <sc-if value="{{isPhone}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px;">
+      <button onClick="{{openMenu}}" aria-label="Мәзір" style="flex-shrink:0; cursor:pointer; width:46px; height:46px; border-radius:12px; border:1px solid {{T.chipBorder}}; background:{{T.inputBg}}; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
+        <span style="display:block; width:20px; height:2px; border-radius:1px; background:{{T.goldInk}};"></span>
+        <span style="display:block; width:20px; height:2px; border-radius:1px; background:{{T.goldInk}};"></span>
+        <span style="display:block; width:14px; height:2px; border-radius:1px; background:{{T.goldInk}}; align-self:flex-start; margin-left:13px;"></span>
+      </button>
+      <div style="display:flex; align-items:center; gap:9px; flex:1; min-width:0;">
+        <img src="assets/logo.png" alt="TarihTalks" style="width:38px; height:38px; object-fit:cover; border-radius:8px; flex-shrink:0;">
+        <div style="font-family:'PT Serif',serif; font-size:20px; font-weight:700; color:{{T.headline}}; white-space:nowrap;">Tarih<span style="color:{{T.gold}};">Talks</span></div>
+      </div>
+      <div style="flex-shrink:0; font-size:14.5px; color:{{T.textMuted}}; white-space:nowrap;"><span style="color:{{T.goldInk}}; font-weight:700;">{{doneTotal}}</span>/{{yearTotal}}</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{isWide}}" hint-placeholder-val="{{ true }}">
     <div style="max-width:1440px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
       <div style="display:flex; align-items:center; gap:12px;">
         <img src="assets/logo.png" alt="TarihTalks" style="width:52px; height:52px; object-fit:cover; border-radius:10px; flex-shrink:0;">
@@ -86,8 +102,53 @@
         <button onClick="{{s.open}}" style="flex-shrink:0; white-space:nowrap; cursor:pointer; display:flex; align-items:center; gap:8px; font-family:'PT Serif',serif; font-size:17px; font-weight:600; padding:9px 18px; border-radius:10px; transition:all 0.25s ease; background:{{s.bg}}; color:{{s.fg}}; border:1px solid {{s.bd}};" style-hover="border-color:#E8C56A;">{{s.label}}</button>
       </sc-for>
     </nav>
+    </sc-if>
   </header>
 
+
+  <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{closeMenu}}" style="position:fixed; inset:0; z-index:60; background:rgba(8,12,28,0.55); backdrop-filter:blur(2px);"></div>
+    <aside data-screen-label="Mobile menu" style="position:fixed; top:0; left:0; bottom:0; z-index:61; width:min(320px, 86vw); background:{{T.pageBg}}; border-right:1px solid {{T.chipBorder}}; box-shadow:12px 0 40px rgba(0,0,0,0.3); overflow-y:auto; display:flex; flex-direction:column; gap:16px; padding:16px 16px 28px; box-sizing:border-box; animation:ttDrawer 0.25s ease-out;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="assets/logo.png" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:10px;">
+        <div style="flex:1;">
+          <div style="font-family:'PT Serif',serif; font-size:21px; font-weight:700; color:{{T.headline}};">Tarih<span style="color:{{T.gold}};">Talks</span></div>
+          <div style="font-size:12.5px; letter-spacing:1px; text-transform:uppercase; color:{{T.textMuted}};">Жылдар сөйлейді</div>
+        </div>
+        <button onClick="{{closeMenu}}" aria-label="Жабу" style="cursor:pointer; width:42px; height:42px; border-radius:50%; border:1px solid {{T.chipBorder}}; background:transparent; color:{{T.goldInk}}; font-size:20px;">✕</button>
+      </div>
+      <div onClick="{{closeMenu}}">
+        <button onClick="{{openAuth}}" style="cursor:pointer; width:100%; height:46px; padding:0 16px; border-radius:12px; background:{{T.gold}}; border:1px solid {{T.gold}}; color:{{T.onGold}}; font-size:16.5px; font-family:'PT Sans',sans-serif; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{userLabel}}</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:8px; background:{{T.chipBg}}; border:1px solid {{T.chipBorder}}; border-radius:999px; padding:6px 14px;">
+        <span style="display:inline-block; width:7px; height:7px; transform:rotate(45deg); background:{{T.gold}};"></span>
+        <span style="font-size:15.5px; color:{{T.textSecondary}};">Дәреже:</span>
+        <span style="font-size:16px; font-weight:700; color:{{T.goldInk}};">{{rankName}}</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px; flex:1; min-width:110px;">
+        <div style="font-size:14.5px; color:{{T.textMuted}};"><span style="color:{{T.goldInk}}; font-weight:700;">{{doneTotal}}</span> / {{yearTotal}} жыл</div>
+        <div style="height:4px; border-radius:2px; background:{{T.trackBg}}; overflow:hidden;"><div style="height:100%; border-radius:2px; background:#C9A24F; width:{{progressPct}};"></div></div>
+      </div>
+      </div>
+      <input value="{{query}}" onChange="{{onQuery}}" placeholder="Жыл немесе оқиға іздеу…" style="background:{{T.inputBg}}; border:1px solid {{T.inputBorder}}; border-radius:999px; padding:9px 16px; color:{{T.text}}; font-family:'PT Sans',sans-serif; font-size:16px; width:100%; padding:12px 16px;  max-width:none; min-width:0; box-sizing:border-box; outline:none;">
+      <div onClick="{{closeMenu}}" style="display:flex; flex-direction:column; gap:8px;">
+        <sc-for list="{{sections}}" as="s" hint-placeholder-count="5">
+          <button onClick="{{s.open}}" style="cursor:pointer; width:100%; text-align:left; font-family:'PT Serif',serif; font-size:19px; font-weight:600; padding:14px 18px; border-radius:12px; border:1px solid {{s.bd}}; background:{{s.bg}}; color:{{s.fg}};">{{s.label}}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <button onClick="{{toggleSound}}" title="Дыбыс" style="cursor:pointer; height:38px; padding:0 14px; border-radius:999px; background:{{T.inputBg}}; border:1px solid {{T.chipBorder}}; color:{{T.goldInk}}; font-size:16px; font-family:'PT Sans',sans-serif; font-weight:700;" style-hover="background:{{T.chipBg}};">{{soundLabel}}</button>
+      <button onClick="{{toggleTheme}}" title="Тема" style="cursor:pointer; height:38px; width:38px; border-radius:50%; background:{{T.inputBg}}; border:1px solid {{T.chipBorder}}; color:{{T.goldInk}}; font-size:17.5px;" style-hover="background:{{T.chipBg}};">{{themeIcon}}</button>
+        <div onClick="{{closeMenu}}">
+      <sc-if value="{{showNotif}}" hint-placeholder-val="{{ false }}"><button onClick="{{openNotif}}" style="cursor:pointer; height:38px; padding:0 14px; border-radius:999px; background:{{notifBg}}; border:1px solid {{T.chipBorder}}; color:{{notifFg}}; font-size:16px; font-family:'PT Sans',sans-serif; font-weight:700; white-space:nowrap;">Хабарламалар{{notifBadge}}</button></sc-if>
+        </div>
+      </div>
+      <div onClick="{{closeMenu}}">
+      <button onClick="{{goFeedback}}" style="cursor:pointer; height:38px; padding:0 16px; width:100%; border-radius:999px; background:transparent; border:1px solid {{T.chipBorder}}; color:{{T.goldInk}}; font-size:16px; font-family:'PT Sans',sans-serif; font-weight:700; white-space:nowrap;" style-hover="background:{{T.chipBg}};">Кері байланыс</button>
+      </div>
+    </aside>
+  </sc-if>
 
   <!-- ===== Grade tabs ===== -->
   <sc-if value="{{notHome}}" hint-placeholder-val="{{ false }}">
@@ -1662,6 +1723,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    this.onResizePhone = () => { const p = window.innerWidth < 760; if (p !== this.state.isPhone) this.setState({ isPhone: p, menuOpen: p ? this.state.menuOpen : false }); };
+    window.addEventListener("resize", this.onResizePhone); this.onResizePhone();
     import('./causes.js').then(m => { this.causeMod = m; }).catch(() => {});
     this.sbReady().then(sb => {
       sb.auth.getSession().then(({ data }) => { const u = this.toUser(data && data.session && data.session.user); if (u) this.signIn(u); });
@@ -2357,6 +2420,10 @@ class Component extends DCLogic {
       fbAgain: () => this.setState({ fbSent: false }),
       T,
       themeIcon: this.state.theme === "light" ? "☾" : "☀",
+      isPhone: !!this.state.isPhone, isWide: !this.state.isPhone,
+      menuOpen: !!this.state.menuOpen && !!this.state.isPhone,
+      openMenu: () => this.setState({ menuOpen: true }),
+      closeMenu: () => this.setState({ menuOpen: false }),
       toggleTheme: () => {
         const t = this.state.theme === "light" ? "dark" : "light";
         this.setState({ theme: t });
