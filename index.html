@@ -1723,8 +1723,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
-    this.onResizePhone = () => { const p = window.innerWidth < 760; if (p !== this.state.isPhone) this.setState({ isPhone: p, menuOpen: p ? this.state.menuOpen : false }); };
-    window.addEventListener("resize", this.onResizePhone); this.onResizePhone();
+    this.onResizePhone = () => { const sw = Math.min(window.screen.width || 9999, window.screen.height || 9999); const p = window.innerWidth < 760 || document.documentElement.clientWidth < 760 || (navigator.maxTouchPoints > 0 && sw < 600); if (p !== this.state.isPhone) this.setState({ isPhone: p, menuOpen: p ? this.state.menuOpen : false }); };
+    window.addEventListener("resize", this.onResizePhone); window.addEventListener("orientationchange", this.onResizePhone); this.onResizePhone(); setTimeout(this.onResizePhone, 300); setTimeout(this.onResizePhone, 1500);
     import('./causes.js').then(m => { this.causeMod = m; }).catch(() => {});
     this.sbReady().then(sb => {
       sb.auth.getSession().then(({ data }) => { const u = this.toUser(data && data.session && data.session.user); if (u) this.signIn(u); });
